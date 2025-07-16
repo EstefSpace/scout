@@ -50,5 +50,5 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader) (*
 		return nil, err
 	}
 
-	return NewResponse(httpResp), nil
+	return NewResponse(httpResp), err
 }
