@@ -1,23 +1,10 @@
 package scout
 
 import (
+	"context"
 	"net/http"
 )
 
-func (c *Client) PleaseGetThis(route string) (*Response, error) {
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", c.Url+route, nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Authorization", c.Authorization)
-	resp, err := client.Do(req)
-
-	if err != nil {
-		return nil, err
-	}
-	return &Response{StatusCode: resp.StatusCode, Status: resp.Status}, nil
+func (c *Client) PleaseGet(ctx context.Context, path string) (*Response, error) {
+	return c.Do(ctx, http.MethodGet, path, nil)
 }

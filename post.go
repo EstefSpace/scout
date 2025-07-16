@@ -1,23 +1,25 @@
 package scout
 
 import (
-	"io"
+	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 )
 
-func (c *Client) PleasePostThis(route string, info io.Reader) (*Response, error) {
-	client := &http.Client{}
-	req, err := http.NewRequest("POST", c.Url+route, info)
+func (c *Client) PleasePostWithJSON(ctx context.Context, path string, data interface{}) (*Response, error) {
+	body, err := json.Marshal(data)
 
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Add("Authorization", c.Authorization)
-	resp, err := client.Do(req)
+	reqBody := bytes.NewReader(body)
 
-	if err != nil {
-		return nil, err
+	resp, err := c.Do(ctx, http.MethodPost, path, reqBody)
+	if err == nil {
+		resp.Header.Add("Content-Type", "Application/Json")
 	}
-	return &Response{StatusCode: resp.StatusCode, Status: resp.Status}, nil
+
+	return resp, nil
 }
