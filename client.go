@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"time"
 )
 
 type Client struct {
@@ -18,7 +19,9 @@ type Response struct {
 }
 
 func NewClient(url string) *Client {
-	return &Client{Url: url}
+	return &Client{httpClient: &http.Client{
+		Timeout: 10 * time.Second, // Default timeout
+	}, Url: url, headers: make(map[string]string)}
 }
 
 func NewResponse(r *http.Response) *Response {
@@ -50,5 +53,5 @@ func (c *Client) Do(ctx context.Context, method, path string, body io.Reader) (*
 		return nil, err
 	}
 
-	return NewResponse(httpResp), err
+	return NewResponse(httpResp), nil
 }

@@ -21,5 +21,5 @@ func (c *Client) PleasePostWithJSON(ctx context.Context, path string, data inter
 		resp.Header.Add("Content-Type", "Application/Json")
 	}
 
-	return resp, nil
+	return resp, err
 }
